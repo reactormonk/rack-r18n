@@ -27,9 +27,9 @@ module Rack
 
     def set_r18n(env)
       request = Rack::Request.new(env)
-      locales = R18n::I18n.parse_http(env['HTTP_ACCEPT_LANGUAGE'])
+      locales = ::R18n::I18n.parse_http(env['HTTP_ACCEPT_LANGUAGE'])
       locales.insert(0, request.params[:locale]) if request.params[:locale]
-      R18n.set(R18n::I18n.new(locales, @dirs))
+      ::R18n.set(::R18n::I18n.new(locales, @dirs))
     end
 
   end
