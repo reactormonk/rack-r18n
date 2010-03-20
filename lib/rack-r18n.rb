@@ -20,9 +20,7 @@ module Rack
 
     def call(env)
       set_r18n(env)
-      status, headers, body = @app.call(env)
-      headers['Content-Language'] = locale
-      [status, headers, body]
+      @app.call(env)
     end
 
     def set_r18n(env)
