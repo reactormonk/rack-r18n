@@ -15,7 +15,7 @@ module Rack
       ::R18n::I18n.default = @options[:default] || "en"
       @options[:dirs] ||= "i18n"
       @dirs = Array(@options[:dirs]).map do |dir|
-        (Pathname(__FILE__).dirname + dir).expand_path
+        (Pathname(root).dirname + dir).expand_path
       end
     end
 
@@ -29,6 +29,18 @@ module Rack
       locales = ::R18n::I18n.parse_http(env['HTTP_ACCEPT_LANGUAGE'])
       locales.insert(0, request.params[:locale]) if request.params[:locale]
       ::R18n.set(::R18n::I18n.new(locales, @dirs))
+    end
+
+    def root
+      if defined? Merb
+        Merb.root
+      elsif defined? Sinatra
+        Sinatra.root
+      elsif defined? Rails
+        Rails.root
+      elsif defined? Rango
+        Rango.root
+      end
     end
 
   end
