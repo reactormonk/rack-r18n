@@ -15,7 +15,7 @@ module Rack
       ::R18n::I18n.default = @options[:default] || "en"
       @options[:dirs] ||= "i18n"
       @dirs = Array(@options[:dirs]).map do |dir|
-        (Pathname(root).dirname + dir).expand_path
+        (Pathname(root) + dir).expand_path
       end
     end
 
