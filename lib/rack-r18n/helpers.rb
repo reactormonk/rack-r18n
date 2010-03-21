@@ -1,5 +1,5 @@
-module R18n
-  module Rack
+module Rack
+  class R18n
     module Helpers
       def r18n
         R18n.get
