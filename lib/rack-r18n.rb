@@ -7,6 +7,7 @@ module Rack
     # Avaible options:
     # :default => en
     # :dirs => "i18n"
+    # Note: This is relative to #root
     attr_reader :options, :dirs
     def initialize(app, options = {})
       @app = app
@@ -20,14 +21,15 @@ module Rack
     end
 
     def call(env)
-      set_r18n(env)
+      @env = env
+      set_r18n
       @app.call(env)
     end
 
-    def set_r18n(env)
-      request = Rack::Request.new(env)
-      locales = ::R18n::I18n.parse_http(env['HTTP_ACCEPT_LANGUAGE'])
-      handle_session_locale(env['rack.session'], locales, request.params[:locale])
+    def set_r18n
+      request = Rack::Request.new(@env)
+      locales = ::R18n::I18n.parse_http(@env['HTTP_ACCEPT_LANGUAGE'])
+      handle_session_locale(@env['rack.session'], locales, request.params[:locale])
       ::R18n.set(::R18n::I18n.new(locales, @dirs))
     end
 
@@ -42,16 +44,22 @@ module Rack
       locales.insert(0, locale) if locale
     end
 
-    def root
-      if defined? Merb
-        Merb.root
-      elsif defined? Sinatra
-        Sinatra.root
-      elsif defined? Rails
-        Rails.root
-      elsif defined? Rango
-        Rango.root
-      end
+    def self.root
+      @@root ||=  if defined? Merb
+                    Merb.root
+                  elsif defined? Sinatra
+                    Sinatra.root
+                  elsif defined? Rails
+                    Rails.root
+                  elsif defined? Rango
+                    Rango.root
+                  else
+                    Dir.pwd
+                  end
+    end
+
+    def self.root=(root)
+      @@root = root
     end
 
   end
