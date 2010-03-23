@@ -23,7 +23,7 @@ module Rack
     def call(env)
       @env = env
       set_r18n
-      @app.call(env)
+      @app.call(@env)
     end
 
     def set_r18n
