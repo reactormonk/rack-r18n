@@ -1,5 +1,5 @@
 h1. Rack-R18n
 
 A small Rack middleware taking care of setting up your R18n locales.
-You may pass @:default@ for a default locale and @:dirs@ for translation dirs,
+You may pass @:default@ for a default locale and @:place@ for translation place,
 defaults to "i18n".
