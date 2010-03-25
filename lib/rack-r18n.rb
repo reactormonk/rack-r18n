@@ -27,10 +27,12 @@ module Rack
     end
 
     def set_r18n
-      request = Rack::Request.new(@env)
-      locales = ::R18n::I18n.parse_http(@env['HTTP_ACCEPT_LANGUAGE'])
-      handle_session_locale(@env['rack.session'], locales, request.params[:locale])
-      ::R18n.set(::R18n::I18n.new(locales, @dirs))
+      ::R18n.set do
+        request = Rack::Request.new(@env)
+        locales = ::R18n::I18n.parse_http(@env['HTTP_ACCEPT_LANGUAGE'])
+        handle_session_locale(@env['rack.session'], locales, request.params[:locale])
+        ::R18n::I18n.new(locales, @dirs)
+      end
     end
 
     def handle_session_locale(session, locales, locale=nil)
