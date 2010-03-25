@@ -8,42 +8,42 @@ module Rack
     # :default => en
     # :place => "i18n"
     # Note: This is relative to #root
-    attr_reader :options, :dirs
+    attr_reader :options, :place
     def initialize(app, options = {})
       @app = app
       @options = options
 
       ::R18n::I18n.default = @options[:default] || "en"
       @options[:place] ||= "i18n"
-      @dirs = Array(@options[:place]).map do |dir|
-        (Pathname(root) + dir).expand_path
+      @place = Array(@options[:place]).map do |dir|
+        (Pathname(self.class.root) + dir).expand_path
       end
     end
 
     def call(env)
       @env = env
-      set_r18n
+      @env['r18n.i18n'] = generate_r18n
       @app.call(@env)
     end
 
-    def set_r18n
-      ::R18n.set do
-        request = Rack::Request.new(@env)
-        locales = ::R18n::I18n.parse_http(@env['HTTP_ACCEPT_LANGUAGE'])
-        handle_session_locale(@env['rack.session'], locales, request.params[:locale])
-        ::R18n::I18n.new(locales, @dirs)
+    def generate_r18n
+      request = Rack::Request.new(@env)
+      locales = ::R18n::I18n.parse_http(@env['HTTP_ACCEPT_LANGUAGE'])
+      if locale = session_locale(@env['rack.session'], locales, request.params[:locale])
+        locale.insert(0, locale)
       end
+      ::R18n::I18n.new(locales, @place)
     end
 
-    def handle_session_locale(session, locales, locale=nil)
+    def session_locale(session, locales, locale=nil)
       if locale
         if session
           session[:locale] = locale
         end
-      elsif session[:locale]
+      elsif session && session[:locale]
         locale = session[:locale]
       end
-      locales.insert(0, locale) if locale
+      locale
     end
 
     def self.root
