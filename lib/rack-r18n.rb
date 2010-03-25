@@ -7,6 +7,7 @@ module Rack
     # Avaible options:
     # :default => en
     # :place => "i18n"
+    # :thread_safe => nil (aka false)
     # Note: This is relative to #root
     attr_reader :options, :place
     def initialize(app, options = {})
@@ -22,7 +23,11 @@ module Rack
 
     def call(env)
       @env = env
-      @env['r18n.i18n'] = generate_r18n
+      if @options[:thread_safe]
+        @env['r18n.i18n'] = generate_r18n
+      else
+        ::R18n.set {generate_r18n}
+      end
       @app.call(@env)
     end
 
