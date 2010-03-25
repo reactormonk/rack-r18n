@@ -6,7 +6,7 @@ module Rack
   class R18n
     # Avaible options:
     # :default => en
-    # :dirs => "i18n"
+    # :place => "i18n"
     # Note: This is relative to #root
     attr_reader :options, :dirs
     def initialize(app, options = {})
@@ -14,8 +14,8 @@ module Rack
       @options = options
 
       ::R18n::I18n.default = @options[:default] || "en"
-      @options[:dirs] ||= "i18n"
-      @dirs = Array(@options[:dirs]).map do |dir|
+      @options[:place] ||= "i18n"
+      @dirs = Array(@options[:place]).map do |dir|
         (Pathname(root) + dir).expand_path
       end
     end
