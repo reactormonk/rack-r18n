@@ -22,7 +22,7 @@ module Rack
 
     def call(env)
       @env = env
-      R18n.set {generate_r18n}
+      ::R18n.thread_set {generate_r18n}
       @app.call(@env)
     end
 
