@@ -1,6 +1,5 @@
 require 'r18n-core'
 require 'pathname'
-require_relative "rack-r18n/helpers"
 
 module Rack
   class R18n
