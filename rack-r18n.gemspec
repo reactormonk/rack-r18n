@@ -3,7 +3,7 @@
  
 Gem::Specification.new do |s|
   s.name = "rack-r18n"
-  s.version = "0.0.1"
+  s.version = "0.1"
   s.authors = ["Simon Hafner aka Tass"]
   s.homepage = "http://github.com/Tass/rack-r18n"
   s.summary = "A small Rack middleware taking care of setting up your R18n locales."
